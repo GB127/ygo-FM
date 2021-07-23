@@ -5,9 +5,20 @@ class Deck_true:
         self.deck = 40
         self.MBD = 3
 
+    def probabilities(self, draw):
+        probability = {}
+        # MBD:
+        probability["MBD"] = (self.deck - self.MBD) / self.deck
+        for card in range(1, draw):
+            no_MBD = self.deck - self.MBD - card
+            remaining = self.deck - card
+            probability["MBD"] *= (no_MBD)/(remaining)
+        probability["MBD"] = round((1 - probability["MBD"]) * 100, 2)
+        return probability
+
     def __call__(self):
         while True:
-            print(self.deck)
+            print(self)
             command = input("Please enter a command ")
             if command == "reset" or self.deck == 0:
                 break
@@ -24,7 +35,7 @@ class Deck:
 
     def starting_hand(self,deck, card_count, drawing):
         probability = (deck - card_count) / deck
-        for card in range(1,drawing):
+        for card in range(1, 5):
             no_MBD = self.deck - card_count - card
             remaining = self.deck - card
             probability *= (no_MBD)/(remaining)
@@ -41,9 +52,8 @@ class Deck:
 
 test = Deck_true()
 
-test()
+print(test.probabilities(5))
 # Calculate probability of having at least one Dragon + 1 Thunder
-
 
 
 

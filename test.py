@@ -1,29 +1,56 @@
 # 1st : Calculate the odds of having a MD in the first 5 hand
 
 class Deck_true:
+    cards = ["MBD", "D", "d", "f", "Th", "trash"]
     def __init__(self):
         self.deck = 40
-        self.MBD = 3
+        self.MBD = 0
+        self.D = 5
+        self.d = 6
+        self.f = 2
+        self.Th = 4
+
+        self.trash = self.deck - self.MBD - self.D - self.d - self.f - self.Th
 
     def probabilities(self, draw):
         probability = {}
-        # MBD:
-        probability["MBD"] = (self.deck - self.MBD) / self.deck
-        for card in range(1, draw):
-            no_MBD = self.deck - self.MBD - card
-            remaining = self.deck - card
-            probability["MBD"] *= (no_MBD)/(remaining)
-        probability["MBD"] = round((1 - probability["MBD"]) * 100, 2)
+        for cartype in Deck_true.cards:
+            probability[cartype] = (self.deck - self.__dict__[cartype]) / self.deck
+            for card in range(1, draw):
+                no_MBD = self.deck - self.__dict__[cartype] - card
+                remaining = self.deck - card
+                if remaining > 0:
+                    probability[cartype] *= (no_MBD)/(remaining)
+                else:
+                    probability[cartype] *= 0
+
+            probability[cartype] = f'{round((1 - probability[cartype]) * 100, 2):5} %'
         return probability
 
     def __call__(self):
-        while True:
+        while self.deck > 0:
             print(self)
             command = input("Please enter a command ")
             if command == "reset" or self.deck == 0:
                 break
-            self.deck -= 1
+            elif command in Deck_true.cards:
+                self.__dict__[command] -= 1
+                self.deck -= 1
 
+    def __str__(self):
+        #for draw in range(1, 6):
+        string = f'{self.deck} cards remaining\n  |'
+        for card in Deck_true.cards:
+            string += f'{card:^9}|'
+        string += "\n   "
+        for card in Deck_true.cards:
+            string += f'{self.__dict__[card]:^9}|'
+        string += "\n"
+
+        for draw_power in range(1,6):
+            string += f'{draw_power} | {" | ".join(self.probabilities(draw_power).values())} |\n'
+
+        return string
 
 
 
@@ -52,9 +79,4 @@ class Deck:
 
 test = Deck_true()
 
-print(test.probabilities(5))
-# Calculate probability of having at least one Dragon + 1 Thunder
-
-
-
-# Deck  |  MBD%  |  Dragon%  |  Thunder%  | Equip | Trap |
+print(test)

@@ -1,10 +1,12 @@
-# 1st : Calculate the odds of having a MD in the first 5 hand
+from math import factorial, comb
 
 class Deck_true:
     cards = ["MBD", "D", "d", "f", "Th", "trash"]
     def __init__(self):
         self.deck = 40
-        self.MBD = 0
+
+        # template deck for testing purpose. Normally it would start at 0.
+        self.MBD = 2
         self.D = 5
         self.d = 6
         self.f = 2
@@ -12,7 +14,20 @@ class Deck_true:
 
         self.trash = self.deck - self.MBD - self.D - self.d - self.f - self.Th
 
-    def probabilities(self, draw):
+
+    def combo_probabilities(self, draw_power):  # Currently, this calculate the chance of having a Dragon AND a thunder and only trashes.
+        if draw_power < 2: return 0
+        total_combo = comb(self.deck, draw_power)
+        dragon_1 = comb(self.D, 1)
+        thunder_1 = comb(self.Th, 1)
+        trash_1 = comb(self.trash, draw_power - 2)
+
+        total = dragon_1 * thunder_1 * trash_1
+
+        return round((total / total_combo) * 100, 2)
+
+
+    def probabilities(self, draw):  # Probability for each card alone. Should be working correctly.
         probability = {}
         for cartype in Deck_true.cards:
             probability[cartype] = (self.deck - self.__dict__[cartype]) / self.deck
@@ -48,34 +63,13 @@ class Deck_true:
         string += "\n"
 
         for draw_power in range(1,6):
-            string += f'{draw_power} | {" | ".join(self.probabilities(draw_power).values())} |\n'
+            string += f'{draw_power} | {" | ".join(self.probabilities(draw_power).values())} |{self.combo_probabilities(draw_power):5} %'      
+            string += "\n"
 
         return string
 
 
 
-class Deck:
-    def __init__(self):
-        self.deck = 40
-        self.MBD = 3
-        self.trash = 40
-
-    def starting_hand(self,deck, card_count, drawing):
-        probability = (deck - card_count) / deck
-        for card in range(1, 5):
-            no_MBD = self.deck - card_count - card
-            remaining = self.deck - card
-            probability *= (no_MBD)/(remaining)
-        return round((1 - probability)*100, 2)
-
-
-    def __str__(self):
-        string = ""
-        for card in range(self.deck, 0, -1):
-            string += f'{card:2} | {self.starting_hand(card, self.MBD, 5):5} % |\n'
-
-        
-        return f'{string}'
 
 test = Deck_true()
 

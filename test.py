@@ -1,9 +1,35 @@
 from math import factorial, comb
 
+class Deck:
+    def __init__(self):
+        self.deck = 20
+
+        # template deck for testing purpose. Normally it would start at 0.
+        self.MBD = 2
+        self.D = 2
+        self.d = 6
+        self.f = 2
+        self.Th = 4
+
+        self.trash = self.deck - self.MBD - self.D - self.d - self.f - self.Th
+
+    def probability_solo(self,which, draw_power):
+        probability = 0
+        assert draw_power > 0, "Draw power must be >0"
+
+        total_possibility = comb(self.deck, draw_power)
+
+        for duplicate in range(1, draw_power + 1):
+            wanted = comb(self.__dict__[which], duplicate)
+            anything = comb(self.deck - self.__dict__[which], draw_power - duplicate)
+            probability += (wanted * anything) / total_possibility
+        return probability
+
+
 class Deck_true:
     cards = ["MBD", "D", "d", "f", "Th", "trash"]
     def __init__(self):
-        self.deck = 40
+        self.deck = 35
 
         # template deck for testing purpose. Normally it would start at 0.
         self.MBD = 2
@@ -18,9 +44,9 @@ class Deck_true:
     def combo_probabilities(self, draw_power):  # Currently, this calculate the chance of having a Dragon AND a thunder and only trashes.
         if draw_power < 2: return 0
         total_combo = comb(self.deck, draw_power)
-        dragon_1 = comb(self.D, 1)
+        dragon_1 = comb(self.D, 1)  # Calculate all using iteration!
         thunder_1 = comb(self.Th, 1)
-        trash_1 = comb(self.trash, draw_power - 2)
+        trash_1 = comb(self.deck -2, draw_power - 2)
 
         total = dragon_1 * thunder_1 * trash_1
 
@@ -71,6 +97,7 @@ class Deck_true:
 
 
 
-test = Deck_true()
+test = Deck()
 
-print(test)
+for testing in range(1,6):
+    print(test.probability_solo("Th", testing))

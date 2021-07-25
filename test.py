@@ -2,7 +2,7 @@ from math import factorial, comb
 
 class Deck:
     def __init__(self):
-        self.deck = 20
+        self.deck = 35
 
         # template deck for testing purpose. Normally it would start at 0.
         self.MBD = 2
@@ -53,21 +53,6 @@ class Deck_true:
         return round((total / total_combo) * 100, 2)
 
 
-    def probabilities(self, draw):  # Probability for each card alone. Should be working correctly.
-        probability = {}
-        for cartype in Deck_true.cards:
-            probability[cartype] = (self.deck - self.__dict__[cartype]) / self.deck
-            for card in range(1, draw):
-                no_MBD = self.deck - self.__dict__[cartype] - card
-                remaining = self.deck - card
-                if remaining > 0:
-                    probability[cartype] *= (no_MBD)/(remaining)
-                else:
-                    probability[cartype] *= 0
-
-            probability[cartype] = f'{round((1 - probability[cartype]) * 100, 2):5} %'
-        return probability
-
     def __call__(self):
         while self.deck > 0:
             print(self)
@@ -100,4 +85,4 @@ class Deck_true:
 test = Deck()
 
 for testing in range(1,6):
-    print(test.probability_solo("Th", testing))
+    print(test.probability_solo("MBD", testing)* 100)

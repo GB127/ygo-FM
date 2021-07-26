@@ -85,34 +85,6 @@ class Deck_true:
         return round((total / total_combo) * 100, 2)
 
 
-    def __call__(self):
-        while self.deck > 0:
-            print(self)
-            command = input("Please enter a command ")
-            if command == "reset" or self.deck == 0:
-                break
-            elif command in Deck_true.cards:
-                self.__dict__[command] -= 1
-                self.deck -= 1
-
-    def __str__(self):
-        #for draw in range(1, 6):
-        string = f'{self.deck} cards remaining\n  |'
-        for card in Deck_true.cards:
-            string += f'{card:^9}|'
-        string += "\n   "
-        for card in Deck_true.cards:
-            string += f'{self.__dict__[card]:^9}|'
-        string += "\n"
-
-        for draw_power in range(1,6):
-            string += f'{draw_power} | {" | ".join(self.probabilities(draw_power).values())} |{self.combo_probabilities(draw_power):5} %'      
-            string += "\n"
-
-        return string
-
-
-
 
 test = Deck()
 

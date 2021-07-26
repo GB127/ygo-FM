@@ -1,15 +1,23 @@
-from math import factorial, comb
+from math import comb
+
+
+# spells
+# traps
+
 
 class Deck:
+    pairs = [("D", "Th")]
     def __init__(self):
-        self.deck = 17
+        self.deck = 40
 
         # template deck for testing purpose. Normally it would start at 0.
-        self.M = 0
+        self.M = 1
         self.D = 10
-        self.d = 0
-        self.f = 0
+        self.d = 3
+        self.f = 2
         self.Th = 5
+        self.E = 3
+        self.S = 3
 
         # self.trash = self.deck - (sum(self.__dict__.values()) - self.deck)
 
@@ -20,6 +28,9 @@ class Deck:
         cards_in_deck = ""
         for card in list(self.__dict__.values())[1:]:
             cards_in_deck += f' {card:^8}| '
+        for combo in self.pairs:
+            header += f' {"+".join(combo):^8}| '
+            cards_in_deck += f' {"":8}| '
 
 
         table = ""
@@ -27,7 +38,10 @@ class Deck:
             probabilities = []
             for card in list(self.__dict__.keys())[1:]:
                 probabilities.append(self.probability_solo(card, draw_power))
+            for duo in self.pairs:
+                probabilities.append(self.probability_duo(duo, draw_power))
             table += f'{" | ".join(probabilities)} |\n'
+
         return f'{self.deck} cards remaining\n{header}\n{cards_in_deck} \n{table}'
 
 
@@ -45,7 +59,7 @@ class Deck:
 
 
     def probability_duo(self, liste_combos, draw_power):
-        if draw_power < 2: return 0
+        if draw_power < 2: return f'{0:6} %'
 
         all_combos = []
         for first in range(1,6):
@@ -68,7 +82,7 @@ class Deck:
             any_else_total = comb(not_wanted, draw_power - combo[0] - combo[1])
             total += first_total * second_total * any_else_total
 
-        return round(100 * total / total_combos, 3)
+        return f'{round(100 * total / total_combos, 3):6} %'
 
 
 
@@ -104,6 +118,3 @@ test = Deck()
 
 
 print(test)
-for draw in range(1, 6):
-    print(test.probability_duo(["D", "Th"], draw))
-

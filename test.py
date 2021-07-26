@@ -2,24 +2,24 @@ from math import factorial, comb
 
 class Deck:
     def __init__(self):
-        self.deck = 6
+        self.deck = 17
 
         # template deck for testing purpose. Normally it would start at 0.
         self.M = 0
-        self.D = 1
+        self.D = 10
         self.d = 0
         self.f = 0
-        self.Th = 1
+        self.Th = 5
 
-        self.trash = self.deck - (sum(self.__dict__.values()) - self.deck)
+        # self.trash = self.deck - (sum(self.__dict__.values()) - self.deck)
 
     def __str__(self):
         header = ""
         for card in list(self.__dict__.keys())[1:]:
-            header += f' {card:^7}| '
+            header += f' {card:^8}| '
         cards_in_deck = ""
         for card in list(self.__dict__.values())[1:]:
-            cards_in_deck += f' {card:^7}| '
+            cards_in_deck += f' {card:^8}| '
 
 
         table = ""
@@ -41,12 +41,13 @@ class Deck:
             wanted = comb(self.__dict__[which], duplicate)
             anything = comb(self.deck - self.__dict__[which], draw_power - duplicate)
             probability += (wanted * anything) / total_possibility
-        return f'{round(probability * 100,2):5} %'
+        return f'{round(probability * 100,3):6} %'
 
 
-    def probability_combo(self, liste_combos, draw_power):
+    def probability_duo(self, liste_combos, draw_power):
+        if draw_power < 2: return 0
+
         all_combos = []
-            # (1, 1), (1, 2), (1, 3)
         for first in range(1,6):
             for second in range(1,6):
                 all_combos.append((first, second))
@@ -54,8 +55,21 @@ class Deck:
         for combo in all_combos:
             if sum(combo) <= draw_power:
                 valid_combos.append(combo)
-        print(valid_combos)
-        return "test"
+        
+        
+        total_combos = comb(self.deck, draw_power)
+        total = 0
+        for combo in valid_combos:
+            first_total = comb(self.__dict__[liste_combos[0]], combo[0])
+            second_total = comb(self.__dict__[liste_combos[1]], combo[1])
+            not_wanted = self.deck - self.__dict__[liste_combos[0]] - self.__dict__[liste_combos[1]]
+
+
+            any_else_total = comb(not_wanted, draw_power - combo[0] - combo[1])
+            total += first_total * second_total * any_else_total
+
+        return round(100 * total / total_combos, 3)
+
 
 
 class Deck_true:
@@ -88,5 +102,8 @@ class Deck_true:
 
 test = Deck()
 
-print(test.probability_combo(["D", "Th"], 5))
+
+print(test)
+for draw in range(1, 6):
+    print(test.probability_duo(["D", "Th"], draw))
 

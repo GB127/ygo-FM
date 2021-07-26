@@ -84,34 +84,6 @@ class Deck:
 
 
 
-class Deck_true:
-    cards = ["MBD", "D", "d", "f", "Th", "trash"]
-    def __init__(self):
-        self.deck = 35
-
-        # template deck for testing purpose. Normally it would start at 0.
-        self.MBD = 2
-        self.D = 5
-        self.d = 6
-        self.f = 2
-        self.Th = 4
-
-        self.trash = self.deck - self.MBD - self.D - self.d - self.f - self.Th
-
-
-    def combo_probabilities(self, draw_power):  # Currently, this calculate the chance of having a Dragon AND a thunder and only trashes.
-        if draw_power < 2: return 0
-        total_combo = comb(self.deck, draw_power)
-        dragon_1 = comb(self.D, 1)  # Calculate all using iteration!
-        thunder_1 = comb(self.Th, 1)
-        trash_1 = comb(self.deck -2, draw_power - 2)
-
-        total = dragon_1 * thunder_1 * trash_1
-
-        return round((total / total_combo) * 100, 2)
-
-
-
 test = Deck()
 
 

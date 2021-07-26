@@ -7,8 +7,8 @@ from math import comb
 
 class Deck:
     pairs = [("D", "Th")]
-    def __init__(self, M=0, D=0, d=0, f=0, Th=0, E=0, S=0):
-        self.deck = 40
+    def __init__(self, deck=40, M=0, D=0, d=0, f=0, Th=0, E=0, S=0):
+        self.deck = deck
 
         # template deck for testing purpose. Normally it would start at 0.
         self.M = M
@@ -22,8 +22,8 @@ class Deck:
         # self.trash = self.deck - (sum(self.__dict__.values()) - self.deck)
 
     def __str__(self):
-        header = ""
-        cards_in_deck = ""
+        header = f" {'Bad':^8}| "
+        cards_in_deck = f" {self.bad_cards():^8}| "
         for card in list(self.__dict__.items())[1:]:
             header += f' {card[0]:^8}| '
             cards_in_deck += f' {card[1]:^8}| '
@@ -33,14 +33,14 @@ class Deck:
 
         table = ""
         for draw_power in range(1,min(6, self.deck + 1)):
-            probabilities = []
+            probabilities = [self.probability_trash(draw_power)]
             for card in list(self.__dict__.keys())[1:]:
                 probabilities.append(self.probability_solo(card, draw_power))
             for duo in self.pairs:
                 probabilities.append(self.probability_duo(duo, draw_power))
             table += f'{" | ".join(probabilities)} |\n'
 
-        return f'{self.deck} cards remaining\n{header}\n{cards_in_deck} \n{table}'
+        return f'{self.deck} cards remaining\n{header}\n{cards_in_deck}\n{table}'
 
 
     def probability_solo(self,which, draw_power):
@@ -82,7 +82,13 @@ class Deck:
 
         return f'{round(100 * total / total_combos, 3):6} %'
 
+    def bad_cards(self):
+        return 2*self.deck - sum(self.__dict__.values())
+
+    def probability_trash(self, draw_power):
+        probability = comb(self.bad_cards(), draw_power) / comb(self.deck, draw_power)
+        return f'{round(probability * 100, 3):6} %'
 
 
-test = Deck(3, Th=5, D=2)
+test = Deck(M=3, Th=5, D=2, E=9, deck=25)
 print(test)

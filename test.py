@@ -23,15 +23,13 @@ class Deck:
 
     def __str__(self):
         header = ""
-        for card in list(self.__dict__.keys())[1:]:
-            header += f' {card:^8}| '
         cards_in_deck = ""
-        for card in list(self.__dict__.values())[1:]:
-            cards_in_deck += f' {card:^8}| '
+        for card in list(self.__dict__.items())[1:]:
+            header += f' {card[0]:^8}| '
+            cards_in_deck += f' {card[1]:^8}| '
         for combo in self.pairs:
             header += f' {"+".join(combo):^8}| '
             cards_in_deck += f' {"":8}| '
-
 
         table = ""
         for draw_power in range(1,min(6, self.deck + 1)):

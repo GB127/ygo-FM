@@ -7,17 +7,17 @@ from math import comb
 
 class Deck:
     pairs = [("D", "Th")]
-    def __init__(self):
+    def __init__(self, M=0, D=0, d=0, f=0, Th=0, E=0, S=0):
         self.deck = 40
 
         # template deck for testing purpose. Normally it would start at 0.
-        self.M = 1
-        self.D = 10
-        self.d = 3
-        self.f = 2
-        self.Th = 5
-        self.E = 3
-        self.S = 3
+        self.M = M
+        self.D = D
+        self.d = d
+        self.f = f
+        self.Th = Th
+        self.E = E
+        self.S = S
 
         # self.trash = self.deck - (sum(self.__dict__.values()) - self.deck)
 
@@ -84,7 +84,5 @@ class Deck:
 
 
 
-test = Deck()
-
-
+test = Deck(3, Th=5, D=2)
 print(test)

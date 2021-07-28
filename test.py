@@ -59,6 +59,8 @@ class Deck:
 
     def game(self):
         def valid_cards(cards):
+            if len(cards) > 5: return False
+
             list_valid = list(self.__dict__.keys()) + ["X"]
             check = True
             for card in cards:
@@ -87,7 +89,14 @@ class Deck:
 
 
     def __call__(self):
-        self.game()
+        while True:
+            command = input("What would you like to do?\n[game, edit, end]")
+            if command == "game":
+                self.game()
+            elif command == "end":
+                break
+
+
     def probability_duo(self, liste_combos, draw_power):
         if draw_power < 2: return f'{0:6} %'
 
@@ -122,6 +131,6 @@ class Deck:
         return f'{round(probability * 100, 3):6} %'
 
 
-test = Deck(M=3, T=5, D=2, E=9, deck=25)
+test = Deck(M=3, T=5, D=2, E=9, deck=40)
 
 test()

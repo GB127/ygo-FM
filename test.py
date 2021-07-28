@@ -1,4 +1,5 @@
 from math import comb
+from copy import deepcopy
 
 
 # spells
@@ -6,8 +7,8 @@ from math import comb
 
 
 class Deck:
-    pairs = [("D", "Th")]
-    def __init__(self, deck=40, M=0, D=0, d=0, f=0, Th=0, E=0, S=0):
+    pairs = [("D", "T")]
+    def __init__(self, deck=40, M=0, D=0, d=0, f=0, T=0, E=0, S=0):
         self.deck = deck
 
         # template deck for testing purpose. Normally it would start at 0.
@@ -15,14 +16,14 @@ class Deck:
         self.D = D
         self.d = d
         self.f = f
-        self.Th = Th
+        self.T = T
         self.E = E
         self.S = S
 
         # self.trash = self.deck - (sum(self.__dict__.values()) - self.deck)
 
     def __str__(self):
-        header = f" {'Bad':^8}| "
+        header = f" {'X':^8}| "
         cards_in_deck = f" {self.bad_cards():^8}| "
         for card in list(self.__dict__.items())[1:]:
             header += f' {card[0]:^8}| '
@@ -56,6 +57,37 @@ class Deck:
         return f'{round(probability * 100,3):6} %'
 
 
+    def game(self):
+        def valid_cards(cards):
+            list_valid = list(self.__dict__.keys()) + ["X"]
+            check = True
+            for card in cards:
+                    check = ((card in list_valid) and check)
+            for card in list_valid:
+                if card == "X":
+                    check = ((self.bad_cards() >= cards.count(card)) and check)
+                else:
+                    check = ((self.__dict__[card] >= cards.count(card)) and check)
+            return check
+
+        backup = deepcopy(self.__dict__)
+
+        while True:
+            print(self)
+            cards = input("What cards did you draw? [reset, exit] ")
+            if cards == "reset":
+                self.__dict__ = backup
+            elif cards == "exit":
+                break
+            elif valid_cards(cards):
+                for card in cards:
+                    self.deck -= 1
+                    if card != "X":
+                        self.__dict__[card] -= 1
+
+
+    def __call__(self):
+        self.game()
     def probability_duo(self, liste_combos, draw_power):
         if draw_power < 2: return f'{0:6} %'
 
@@ -90,5 +122,6 @@ class Deck:
         return f'{round(probability * 100, 3):6} %'
 
 
-test = Deck(M=3, Th=5, D=2, E=9, deck=25)
-print(test)
+test = Deck(M=3, T=5, D=2, E=9, deck=25)
+
+test()

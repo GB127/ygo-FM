@@ -1,5 +1,8 @@
 from math import comb
 from copy import deepcopy
+from os import system
+
+clear = lambda: system('cls')
 
 
 # spells
@@ -75,6 +78,7 @@ class Deck:
         backup = deepcopy(self.__dict__)
 
         while True:
+            clear()
             print(self)
             cards = input("What cards did you draw? [reset, exit] ")
             if cards == "reset":
